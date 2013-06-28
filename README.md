@@ -10,222 +10,78 @@
                                                                       \_/__/  \_/__/
 `````
 
-# cinovo-logger
+# cinovo-syslog-pipe
 
-cinovo-logger is an async logger for Node.js with multiple endpoints.
+cinovo-syslog-pipe can forward syslog udp packages to [cinovo-logger](https://github.com/cinovo/node-logger)
 
 ## Getting started
 
-### At first you must install and require the logger.
+### At first you must install the pipe.
 
-    npm install cinovo-logger
+    npm install -g cinovo-syslog-pipe
 
-### Next you must require the module
+### Next you can run it
 
-`````javascript
-var logger = require("cinovo-logger");
+`````
+syslogpipe --port=8514 --console
 `````
 
-### Append an endpoint
+### Forward your local syslog to 8514
 
-There are some endpoints available:
+You must configure a forwarding rule in your syslogd.
 
-* [cinovo-logger-console](https://github.com/cinovo/node-logger-console)
-* [cinovo-logger-file](https://github.com/cinovo/node-logger-file)
-* [cinovo-logger-syslog](https://github.com/cinovo/node-logger-syslog)
-* [cinovo-logger-aws](https://github.com/cinovo/node-logger-aws)
-
-You could also write your own endpoint.
-
-If you wish to log to console just:
-
-	npm install cinovo-logger-console
-
-In your JavaScript code append the endpoint.
-
-`````javascript
-logger.append(require("cinovo-logger-console")(true, true, true, true));
+/etc/rsyslog.conf
+`````
+*.* @localhost:8514
 `````
 
-### Log something
+Restart your syslogd.
 
-`````javascript
-logger.debug("all values are ok");
-logger.info("myscript", "all values are ok");
-logger.error("myscript", "some values are not ok", {a: 10, b: 20});
-logger.exception("myscript", "some values are not ok", new Error("error"));
-logger.critical("myscript", "all values are not ok", {a: 10, b: 20}, function(err) { ... });
+### Log something to syslog.
+
+Send a message to your local syslog.
 `````
+logger "test"
+`````
+You should now se the log on your console.
 
 ### Done
 
-Now you can log to multiple endpoints.
+Now you listen on port 8514 for udp packages in thr syslog format which are printed to console.
+
+## CLI
+
+You can start the pipe with `syslogpipe`.
+
+### Available parameters
+* `--port`: Number - UDP port to listen on
+
+### Activate Endpoint
+
+#### Console
+* `--console`: Just activate the console endpoit
+
+#### AWS
+
+##### SQS
+* `--aws-region`: String -
+* `--aws-sqs-queue`: String -
+* `--aws-access-key-id`: String -
+* `--aws-secret-access-key`: String -
+
+##### SNS
+* `--aws-region`: String -
+* `--aws-sns-topic`: String -
+* `--aws-access-key-id`: String -
+* `--aws-secret-access-key`: String -
 
 ## API
 
-### debug, info, error, critical([origin], message, [metadata], [callback])
+You could also use the pipe within node as a module.
 
-Depending on the level you want to log choose one of the four methods.
+### (port, logger)
 
-* `origin`: String to indicate where the log come from, e. g. the name of the script (optional)
-* `message`: String to tell what happened
-* `metadata`: String, Number, Boolean, Array or Object to tell you more about the situation (optional)
-* `callback`: Function(err) Fired after log was processed by all endpoints (optional)
-    * `err`: Error (optional)
+To startlistening on the port for udp packages and forearding them to an instance of [cinovo-logger](https://github.com/cinovo/node-logger).
 
-**Examples:**
-
-`````javascript
-logger.debug("all values are ok");
-logger.info("myscript", "all values are ok");
-logger.error("myscript", "some values are not ok", {a: 10, b: 20});
-logger.critical("myscript", "all values are not ok", {a: 10, b: 20}, function(err) { ... });
-`````
-
-### exception([origin], message, error, [callback])
-
-If you want to log an Error there is a special method `exception` which logs as an `error`
-
-* `origin`: String to indicate where the log come from, e. g. the name of the script (optional)
-* `message`: String to tell what happened
-* `error`: Error
-* `callback`: Function(err) Fired after log was processed by all endpoints (optional)
-    * `err`: Error (optional)
-
-**Examples:**
-
-`````javascript
-logger.exception("some values are not ok", new Error("error"));
-logger.exception("myscript", "some values are not ok", new Error("error"));
-logger.exception("myscript", "some values are not ok", new Error("error"), function(err) { ... });
-`````
-
-### Log
-
-The log object contains the following fields:
-
-`````
-{
-	level: String["debug", "warning", "error", "critical"]
-	date: Date
-	pid: Number
-	hostname: String
-	origin: String to indicate where the log come from, e. g. the name of the script (optional)
-	message: String to tell what happened
-	metadata: String, Number, Boolean, Array or Object to tell you more about the situation (optional)
-	fullOrigin: {
-		file: String of the file name,
-		line: Number of the line,
-		fn: String of the invoked function name
-	} (optional)
-}
-`````
-
-### EventEmitter
-
-The cinovo-logger is also an [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
-
-#### on, addListener(event, listener)
-
-Adds a listener to the end of the listeners array for the specified event.
-
-* `event`: String
-* `listener`: Function(level, log)
-    * `level`: String["debug", "warning", "error", "critical"]
-    * `log`: Log
-
-#### once(event, listener)
-
-Adds a **one time** listener for the event. This listener is invoked only the next time the level is fired, after which it is removed.
-
-* `event`: String
-* `listener`: Function(level, log)
-    * `level`: String["debug", "warning", "error", "critical"]
-    * `log`: Log
-
-#### removeListener(event, listener)
-
-Remove a listener from the listener array for the specified event.
-
-* `event`: String
-* `listener`: Function(level, log)
-    * `level`: String["debug", "warning", "error", "critical"]
-    * `log`: Log
-
-#### removeAllListeners([event])
-
-Removes all listeners, or those of the specified event.
-
-* `event`: String (optional)
-
-### append(appender)
-
-* `appender`: must extend logger.Endpoint see **Custom Endpoint**
-
-### remove(appender, errCallback)
-
-* `appender`: must extend logger.Endpoint see **Custom Endpoint**
-* `errCallback`: Function(err)
-    * `err`: Error
-
-### stop(errCallback)
-
-Stop all endpoints to avoid data loss.
-
-* `errCallback`: Function(err)
-    * `err`: Error
-
-### fullOrigin()
-
-Activates `fullOrigin` output in `log`. Locates the caller of an log function `debug`, `info`, `error`, `exception`, `critical` by:
-
-`````
-{
-	file: String of the file name,
-	line: Number of the line,
-	fn: String of the invoked function name
-}
-`````
-
-### Events
-
-#### level_debug(log)
-
-On `debug` log.
-
-* `log`: Log
-
-#### level_info(log)
-
-On `info` log.
-
-* `log`: Log
-
-#### level_error(log)
-
-On `error` log.
-
-* `log`: Log
-
-#### level_critical(log)
-
-On `critical` log.
-
-* `log`: Log
-
-#### error(err)
-
-If you use on of the log methods `debug`, `info`, `error`, `exception`, `critical` without the optional `callback` and an Error occurs it is emitted.
-
-* `err`: Error
-
-#### endpoint_error(endpoint, err)
-
-If an endpoint.log() returned an error or an error was emitted by an endpoint.
-
-* `endpoint`: Endpoint
-* `err`: Error
-
-## Custom Endpoint
-
-TODO
+* `port`: Number
+* `logger`: Logger
