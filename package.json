@@ -1,6 +1,6 @@
 {
 	"name": "cinovo-syslog-pipe",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Pipe syslog to cinovo-logger.",
 	"keywords": [
 		"syslog",
@@ -24,13 +24,13 @@
 	},
 	"dependencies": {
 		"assert-plus": "0.1.3",
-		"optimist": "0.6.0"
-	},
-	"devDependencies": {
-		"mocha": "1.11.0",
+		"optimist": "0.6.0",
 		"cinovo-logger": "0.3.x",
 		"cinovo-logger-console": "0.3.x",
 		"cinovo-logger-aws": "0.3.x"
+	},
+	"devDependencies": {
+		"mocha": "1.11.0"
 	},
 	"main": "index",
 	"engines": {
