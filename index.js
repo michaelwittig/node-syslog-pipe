@@ -28,15 +28,18 @@ exports.tcp = function(port, logger) {
 	var emitter = new events.EventEmitter();
 	var s = net.createServer(function(c) {
 		console.log("server connected");
-		c.on("data", function(msg) {
-			libsyslog.decodeMessage(msg, function(err, syslog) {
-				if (err) {
-					logger.error("syslogpipe", "Could not parse tcp syslog msg", syslog);
-				} else {
-					var level = mapSeverityToLevel(syslog.severityCode, syslog.severity);
-					var origin = mapFacilityToOrigin(syslog.facilityCode, syslog.facility);
-					logger[level](origin, syslog.msg, syslog);
-				}
+		c.setEncoding("utf8");
+		c.on("data", function(msgs) {
+			msgs.split("\n").forEach(function(msg) {
+				libsyslog.decodeMessage(msg, function(err, syslog) {
+					if (err) {
+						logger.error("syslogpipe", "Could not parse tcp syslog msg", syslog);
+					} else {
+						var level = mapSeverityToLevel(syslog.severityCode, syslog.severity);
+						var origin = mapFacilityToOrigin(syslog.facilityCode, syslog.facility);
+						logger[level](origin, syslog.msg, syslog);
+					}
+				});
 			});
 		});
 	});
@@ -64,7 +67,7 @@ exports.udp = function(port, logger) {
 	var emitter = new events.EventEmitter();
 	var s = dgram.createSocket("udp4");
 	s.on("message", function(msg) {
-		libsyslog.decodeMessage(msg, function(err, syslog) {
+		libsyslog.decodeMessage(msg.toString("utf8"), function(err, syslog) {
 			if (err) {
 				logger.error("syslogpipe", "Could not parse udp syslog msg", syslog);
 			} else {
