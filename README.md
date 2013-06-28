@@ -80,7 +80,7 @@ You can start the pipe with `syslogpipe`.
 
 You could also use the pipe within node as a module.
 
-### (port, logger)
+### udp(port, logger)
 
 To startlistening on the port for udp packages and forearding them to an instance of [cinovo-logger](https://github.com/cinovo/node-logger).
 

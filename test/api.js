@@ -5,9 +5,9 @@ var assert = require("assert-plus"),
 logger.append(require("cinovo-logger-console")(false, false, false, false));
 
 describe("API", function() {
-	describe("()", function() {
+	describe("udp()", function() {
 		it("should work if all params are set", function(done) {
-			var p = pipe(8541, logger);
+			var p = pipe.udp(8541, logger);
 			logger.once("level_info", function(log) {
 				assert.equal(log.origin, "user-level messages");
 				p.close();

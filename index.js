@@ -21,7 +21,7 @@ function mapSeverityToLevel(severityCode, severity) {
 	}
 }
 
-module.exports = function(port, logger) {
+exports.udp = function(port, logger) {
 	assert.number(port, "port");
 	assert.object(logger, "logger");
 	var emitter = new events.EventEmitter();
@@ -44,12 +44,13 @@ module.exports = function(port, logger) {
 		emitter.emit("error", err);
 	});
 	s.on("close", function() {
-		emitter.emit("close");
+		emitter.emit("closed");
 	});
 	s.bind(8514, function() {
 		emitter.emit("bound");
 	});
 	emitter.close = function() {
+		emitter.emit("close");
 		s.close();
 	};
 	return emitter;
