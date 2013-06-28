@@ -37,6 +37,9 @@ module.exports = function(port, logger) {
 			}
 		});
 	});
+	logger.on("endpoint_error", function(endpoint, err) {
+		emitter.emit("error", err);
+	});
 	s.on("error", function(err) {
 		emitter.emit("error", err);
 	});
