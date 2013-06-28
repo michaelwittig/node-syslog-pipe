@@ -12,11 +12,12 @@
 
 # cinovo-syslog-pipe
 
-cinovo-syslog-pipe can forward syslog udp packages to [cinovo-logger](https://github.com/cinovo/node-logger)
+cinovo-syslog-pipe can forward syslog udp packages to [cinovo-logger](https://github.com/cinovo/node-logger).
+It can help you to send logs from your system to AWS SQS or SNS.
 
 ## Getting started
 
-### At first you must install the pipe.
+### At first you must install the pipe
 
     npm install -g cinovo-syslog-pipe
 
@@ -37,7 +38,7 @@ You must configure a forwarding rule in your syslogd.
 
 Restart your syslogd.
 
-### Log something to syslog.
+### Log something to syslog
 
 Send a message to your local syslog.
 `````
