@@ -56,11 +56,12 @@ You can start the pipe with `syslogpipe`.
 
 ### Available parameters
 * `--port`: Number - UDP port to listen on
+* `--tcp`: activate tcp mode (optiona)
 
 ### Activate Endpoint
 
 #### Console
-* `--console`: Just activate the console endpoit
+* `--console`: activate the console endpoint
 
 #### AWS
 
@@ -82,7 +83,14 @@ You could also use the pipe within node as a module.
 
 ### udp(port, logger)
 
-To startlistening on the port for udp packages and forearding them to an instance of [cinovo-logger](https://github.com/cinovo/node-logger).
+Listening on port for udp packages and forwarding them to an instance of [cinovo-logger](https://github.com/cinovo/node-logger).
+
+* `port`: Number
+* `logger`: Logger
+
+### tcp(port, logger)
+
+Listening on port for tcp packages and forwarding them to an instance of [cinovo-logger](https://github.com/cinovo/node-logger).
 
 * `port`: Number
 * `logger`: Logger
