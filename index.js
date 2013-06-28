@@ -31,15 +31,17 @@ exports.tcp = function(port, logger) {
 		c.setEncoding("utf8");
 		c.on("data", function(msgs) {
 			msgs.split("\n").forEach(function(msg) {
-				libsyslog.decodeMessage(msg, function(err, syslog) {
-					if (err) {
-						logger.error("syslogpipe", "Could not parse tcp syslog msg", syslog);
-					} else {
-						var level = mapSeverityToLevel(syslog.severityCode, syslog.severity);
-						var origin = mapFacilityToOrigin(syslog.facilityCode, syslog.facility);
-						logger[level](origin, syslog.msg, syslog);
-					}
-				});
+				if (msg) { // sort out empty msg
+					libsyslog.decodeMessage(msg, function(err, syslog) {
+						if (err) {
+							logger.error("syslogpipe", "Could not parse tcp syslog msg", syslog);
+						} else {
+							var level = mapSeverityToLevel(syslog.severityCode, syslog.severity);
+							var origin = mapFacilityToOrigin(syslog.facilityCode, syslog.facility);
+							logger[level](origin, syslog.msg, syslog);
+						}
+					});
+				}
 			});
 		});
 	});
