@@ -24,13 +24,13 @@ describe("syslog", function() {
 				if(err) {
 					throw err;
 				} else {
-					assert.equal(syslog.facilityCode, 3);
-					assert.equal(syslog.severityCode, 6);
-					assert.equal(syslog.date, "Jun 28 11:23:07");
+					assert.equal(syslog.facilityCode, 1);
+					assert.equal(syslog.severityCode, 5);
+					assert.equal(syslog.date, "Jun 28 13:25:14");
 					assert.equal(syslog.host, "ip-10-0-0-65");
-					assert.equal(syslog.app, "dhclient");
-					assert.equal(syslog.pid, 1027);
-					assert.equal(syslog.msg, "DHCPACK from 10.0.0.1 (xid=0x4ac728df)");
+					assert.equal(syslog.app, "ec2-user");
+					assert.equal(syslog.pid, undefined);
+					assert.equal(syslog.msg, "hello");
 					done();
 				}
 			});
