@@ -29,7 +29,7 @@ module.exports = function(port, logger) {
 	s.on("message", function(msg) {
 		libsyslog.decodeMessage(msg, function(err, syslog) {
 			if (err) {
-				emitter.emit("error", err);
+				logger.error("syslogpipe", "Could not parse syslog msg", syslog);
 			} else {
 				var level = mapSeverityToLevel(syslog.severityCode, syslog.severity);
 				var origin = mapFacilityToOrigin(syslog.facilityCode, syslog.facility);
