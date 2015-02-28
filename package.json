@@ -16,13 +16,10 @@
 	},
 	"contributors": [
 	],
-	"licenses": [{
-		"type": "Apache License, Version 2.0",
-		"url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-	}],
+	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/cinovo/node-syslog-pipe.git"
+		"url": "https://github.com/michaelwittig/node-syslog-pipe.git"
 	},
 	"dependencies": {
 		"assert-plus": "0.1.4",
@@ -46,7 +43,7 @@
 	},
 	"readmeFilename": "README.md",
 	"bugs": {
-		"url": "https://github.com/cinovo/node-syslog-pipe/issues"
+		"url": "https://github.com/michaelwittig/node-syslog-pipe/issues"
 	},
 	"preferGlobal": "true",
 	"bin": {
